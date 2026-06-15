@@ -114,9 +114,6 @@ int main(int argc, char *argv[])
     }
 
 
-
-    std::cout << "\nT\n";
-
     /*
         COLOR PARSING
     */   
@@ -147,7 +144,7 @@ int main(int argc, char *argv[])
     
 
 
-    //set up color data structure
+    //set up color data structure 
     ColorConfig colors = process_colors(config_colors);
 
     if(preview) { print_colors(colors); std::cout << "\n\n"; return 0; }
