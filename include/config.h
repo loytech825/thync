@@ -7,7 +7,7 @@
 */
 
 #include "config_parser.h"
-
+#include "color256.h"
 /*
     A struct representing a parsed config file
     sections only holds section specific data

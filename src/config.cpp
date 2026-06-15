@@ -23,7 +23,11 @@ void process_config(Config& config, const std::string& output_dir, const std::st
         }
         v = replace_all(v, "${config_dir}", config_dir);
         v = replace_all(v, "${output_dir}", output_dir);
+
+        if(k == "format" || k == "format_id" || k == "config_format" || k == "defaults") { v = insert_variables(v, std::filesystem::path(config_dir) / "thync"); }
+        else    { v = insert_variables(v, config.global.key_value_pairs); }
     }
+
 
     for(auto& section_config : config.sections)
     {
@@ -63,7 +67,7 @@ void process_config(Config& config, const std::string& output_dir, const std::st
         for(auto& [k, v] : section_config.key_value_pairs){
 
 
-            if(k == "format" || k == "format_id" || k == "config_format") { v = insert_variables(v, std::filesystem::path(config_dir) / "thync"); }
+            if(k == "format" || k == "format_id" || k == "config_format" || k == "defaults") { v = insert_variables(v, std::filesystem::path(config_dir) / "thync"); }
             else    { v = insert_variables(v, section_config.key_value_pairs); }
 
             

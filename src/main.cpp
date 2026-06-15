@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
     //TODO verbose?
 
     output_dir = fs::absolute(fs::path(output_dir)).lexically_normal();
-    color_file = fs::absolute(fs::path(color_file)).lexically_normal();
 
 
     fs::path config_dir{get_config_dir()};
@@ -64,6 +63,23 @@ int main(int argc, char *argv[])
 
     
     process_config(config, output_dir, config_dir);
+
+    //we need to keep a reference of the original argument value
+    std::string default_color_loc = color_file;
+    //check default file locations
+    if(config.global.key_value_pairs.contains("theme_dir"))
+    {
+        fs::path theme_dir{config.global.key_value_pairs.at("theme_dir")};
+        color_file = fs::absolute(fs::path(theme_dir) / color_file).lexically_normal();
+    }
+   
+
+    if(!config.global.key_value_pairs.contains("theme_dir") || !fs::exists(color_file))
+    {
+        std::cout << "File not found in default dir, checking relative...\n";
+        color_file = fs::absolute(fs::path(default_color_loc)).lexically_normal();
+        std::cout << color_file << "\n";
+    }
 
 
     //check if defaults exist for each section
@@ -99,8 +115,7 @@ int main(int argc, char *argv[])
 
 
 
-
-
+    std::cout << "\nT\n";
 
     /*
         COLOR PARSING
@@ -135,7 +150,7 @@ int main(int argc, char *argv[])
     //set up color data structure
     ColorConfig colors = process_colors(config_colors);
 
-    if(preview) { print_256(colors.palette); std::cout << "\n\n"; return 0; }
+    if(preview) { print_colors(colors); std::cout << "\n\n"; return 0; }
 
 
 
@@ -162,6 +177,7 @@ int main(int argc, char *argv[])
             if(path.has_extension())
             {
                 if(!fs::exists(path.parent_path())) fs::create_directories(path.parent_path());
+                if(path.extension() == ".noext") path = path.replace_extension("");
             }else
             {
                 if(!fs::exists(path)) fs::create_directories(path);

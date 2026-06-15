@@ -8,6 +8,7 @@ This file include random helper functions
 #include <vector>
 #include "constants.h"
 #include "config_parser.h"
+#include "color256.h"
 
 std::string replace_all(const std::string& orig, const std::string& from, const std::string& to);
 std::string get_config_dir();

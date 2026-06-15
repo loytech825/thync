@@ -3,8 +3,6 @@
 #include <unordered_map>
 #include <filesystem>
 
-#include "constants.h"
-#include "color256.h"
 
 //struct ProgramConfig
 //{
@@ -36,12 +34,6 @@ struct ConfigSection
 /*
     Holds the data for a single section of the color file
 */
-struct ColorSection
-{
-    std::string name;
-    std::unordered_map<std::string, Color> colors;
-};
-
 std::ostream& operator<<(std::ostream& os, const ConfigSection& cfg);
 
 //parses a "line" of config

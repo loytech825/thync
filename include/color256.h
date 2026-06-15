@@ -1,12 +1,11 @@
 #pragma once
 #include <iostream>
 #include <array>
-
 /*******************************************************************/
 /*Attempt at a C++ port of https://github.com/jake-stewart/color256*/
 /*******************************************************************/
 
-
+struct ColorConfig;
 
 //general class for color variables
 // RGB, LAB, HSV...
@@ -55,3 +54,8 @@ Palette generate_256(std::array<Color, 16> base8, Color bg, Color fg);
     @brief showcases the 256 colors
 */
 void print_256(const std::array<Color, 256> palette);
+
+/*
+ * @brief Prints a color config
+ */
+void print_colors(const ColorConfig& colors);

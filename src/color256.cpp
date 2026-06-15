@@ -1,8 +1,11 @@
 #include "color256.h"
+#include "config.h"
 #include <cmath>
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
+#include <string>
+#include <map>
 
 //reference white point D_65
 Color D_65_2deg{0.9505, 1.00000, 1.089};
@@ -191,6 +194,9 @@ Palette generate_256(std::array<Color, 16> base16, Color bg, Color fg)
     return pallete;
 }
 
+
+
+
 void print_color(Color c, Color BG, Color FG)
 {
 
@@ -291,5 +297,22 @@ void print_256(const std::array<Color, 256> palette)
             }
             std::cout << "\033[m\n";
         }
+    }
+}
+
+void print_colors(const ColorConfig& colors)
+{
+
+    const std::map<std::string, std::string> kvp(colors.global.key_value_pairs.begin(), colors.global.key_value_pairs.end());
+
+    Color fg = kvp.contains("background") ? hex2rgb(kvp.at("foreground")) : Color(255, 255, 255); 
+    Color bg = kvp.contains("background") ? hex2rgb(kvp.at("background")) : Color(0, 0, 0); 
+
+    for(const auto [k, v] : kvp) 
+    {
+        std::string key = k;
+        print_color(hex2rgb(v), bg, fg);
+        std::cout << key.append(20-key.length(), ' ');
+        std::cout << "\033[m\n";
     }
 }
