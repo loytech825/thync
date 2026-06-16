@@ -182,6 +182,26 @@ int main(int argc, char *argv[])
             }
 
             std::cout << "Writing section "  << sect.name << " to " << fs::absolute(path).lexically_normal() << "\n";
+           
+            std::cout << to_print << "\n";
+            //if section has a file field, we just copy the file over to path
+            if(to_print.key_value_pairs.contains("file"))
+            {
+                fs::path copy_from{to_print.key_value_pairs.at("file")};
+
+                std::cout << copy_from.lexically_normal() << "\n";
+                if(!fs::exists(copy_from))
+                {
+                    std::cout << "File " << copy_from.lexically_normal() << " not found, skipping\n";
+                }
+                else
+                {
+                    fs::copy(copy_from, path, std::filesystem::copy_options::overwrite_existing);
+                    std::cout << "\"file\" field found, copying from " << copy_from.lexically_normal() << "\n";
+                }
+                continue;
+            }
+
 
             std::ofstream file{path};
             print_cfg(sect, colors.global, to_print, colors.palette, file);
@@ -252,6 +272,7 @@ void print_cfg(const ConfigSection& section_config, const ConfigSection& global_
 
     auto col_global = global_colors.key_value_pairs;
     auto col_section = section_colors.key_value_pairs;
+
 
     std::vector<std::string> already_printed;
 
