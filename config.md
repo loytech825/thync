@@ -42,6 +42,11 @@ Any already defined color can be used as a variable.
 
 Any color defined as well as those generated can be used as a variable. If a field is assigned multiple times, the last definition will be used.
 
+### Special fields
+|Name|Description|
+|-|-|
+|`file`| If present, this file gets copied to section's `path`. Every other field is then ignored (this can be used to change wallpapers)|
+
 ## Syntax
 
 ### Values
