@@ -4,7 +4,7 @@ Config files are split into [Configuration files](#configuration-files) and [The
 
 ## Configuration files
 
-These files specify how many files get generated, where they are and how they look. It is composed of sections, each section corresponds to a file that will be generated (except the `default` section, which provides default values for other sections). Below are the fields that are understood by the program. Everything else will be ignored. 
+These files specify how many files get generated, where they are and how they look. It is composed of sections, each section corresponds to a file that will be generated (except the `default` section, which provides default values for other sections). The main config file is located at `~/.config/thync/config.conf`. Below are the fields that are understood by the program. Everything else will be ignored. 
 
 
 | Name |Description|Default|
@@ -23,6 +23,10 @@ The following are only to be used in the `default` section.
 |-|-|-|
 |`post_cmd`| A bash command to run after running the app (made so you can make a reload script and it gets called automatically)| `none` |
 |`theme_dir`| Where the program will search for theme files first. If no matching file is found here, relative path is used| `none` |
+
+### Special things
+
+The fields `format`, `format-id`, `defaults` and `config_format` can use the `f{filename}` substitution. This replaces the token with the entirety of the file. Useful for long `config_format` and `defaults`. Filenames are relative to the config directory.
 
 ### Variables available
 
