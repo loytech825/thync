@@ -15,6 +15,7 @@ std::string output_dir{""};
 std::string color_file{""};
 //bool generate_pallete{false};
 bool preview{false}; 
+bool preview_gen{false};
 
 namespace fs = std::filesystem;
 
@@ -148,6 +149,7 @@ int main(int argc, char *argv[])
     ColorConfig colors = process_colors(config_colors);
 
     if(preview) { print_colors(colors); std::cout << "\n\n"; return 0; }
+    if(preview_gen) { print_256(colors.palette); std::cout << "\n\n"; return 0; }
 
 
 
@@ -235,8 +237,11 @@ int parse_arguments(const int argc, char* argv[])
     {
         //boolean arguments
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) { std::cout << HELP; continue;}
-        if(strcmp(argv[i], "--preview") == 0) { preview = true; continue;}
-        //if(strcmp(argv[i], "-g") == 0) { generate_pallete = true; continue;}
+        if(strcmp(argv[i], "--preview") == 0)           { preview = true; continue;}
+        if(strcmp(argv[i], "-p") == 0)                  { preview = true; continue;}
+        //if(strcmp(argv[i], "g") == 0) { generate_pallete = true; continue;}
+        if(strcmp(argv[i], "--preview-gen") == 0)       { preview_gen = true; continue;}
+        if(strcmp(argv[i], "-P") == 0)                  { preview_gen = true; continue;}
 
         //arguments that require another field
         if(i < argc-1)

@@ -59,7 +59,8 @@ Options:
 |---|---|
 |-o \<output-dir>  | Override output directory|
 |-f \<file-name>   | Color config path|
-|--preview         | Prints the generated colors |
+|--preview, -p     | Prints the outputted colors |
+|--preview-gen, -P | Prints the generated pallete|
 
 ---
 

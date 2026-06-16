@@ -1,9 +1,11 @@
 # Config
 
-Config files are split into [Configuration files](#configuration-files) and [Color files](#color-files). The former specify global settings, while the latter defines the colors. The color file is what you must pass to the function when calling. [Syntax](#syntax) is explained further down.
+Config files are split into [Configuration files](#configuration-files) and [Theme files](#color-files). Config files specify the how and the why, theme files specify the what. For syntax see [syntax](#syntax)
 
 ## Configuration files
-These specify the behaviour of the parser. Any section created will generate an additional config file, even if no fields are defined. The following fields are allowed, with defaults provided if missing.
+
+These files specify how many files get generated, where they are and how they look. It is composed of sections, each section corresponds to a file that will be generated (except the `default` section, which provides default values for other sections). Below are the fields that are understood by the program. Everything else will be ignored. 
+
 
 | Name |Description|Default|
 |------|-----------|-------|
@@ -14,9 +16,15 @@ These specify the behaviour of the parser. Any section created will generate an 
 |`config_format`| Specifies what the output file will look like, see examples| too long to fit here, TBA |
 |`mode`| Can be either `modify-add` or `modify-ignore`. The former overrides keys `config_format` and adds anything remaining, the former ignores fields that are not in `config_format`|`modify-add`|
 |`defaults`| A string contaning default values in the same syntax as the config. These values are appended to colors from the color file, and can contain variables. If the color file specifies a color already defined as default, the default color will be overriden by the defined one.|
-|`post_cmd`| A bash command to run after running the app (made so you can make a reload script and it gets called automatically)|
 
-Variables available
+The following are only to be used in the `default` section.
+
+|Name|Description|Default|
+|-|-|-|
+|`post_cmd`| A bash command to run after running the app (made so you can make a reload script and it gets called automatically)| `none` |
+|`theme_dir`| Where the program will search for theme files first. If no matching file is found here, relative path is used| `none` |
+
+### Variables available
 
 |Name|Value|
 |-|-|
@@ -30,17 +38,18 @@ Variables available
 [^1]: won't get parsed but will be used in `format`
 
 
-## Color files
+## Theme files
 
-These files provide colors to parse.
-Section names must be the same as in [config](#configuration-files), any additionals wont be parsed. A section must be present to be outputted.
-Color of the type `colorXXX` where `XXX` is a number from 0 to 255 and standard ANDI colors (`black`, `bright_green`, ...) will have an id. Colors with an id 0 - 15 are equivalent to ANSI colors, and will have such as `color_name`. If `mode` is set to `modify-add`, all the fields will be outputted, otherwise only those whose `key` matches the first word in a line of `config_format` (excluding `"`).
+These files provide the color information. Any field is valid, although there are some [special](#special-fields) ones.
 
-Any already defined color can be used as a variable. 
+Any field of the form `key = #RRGGBB` will be seen as a color and their value will be `RRGGBB` (without the `#`!).
+Standard ansi colors like `black`, `red`... and their bright variants `bright_black`, `brigh_red` will have their keys changed to `0` - `15`.
+Field where the key is `colorXXX` where `XXX` is a number between `0` and `255` will also have their keys changed to just the number.
+When using these colors as numbers, you can use `${colorXXX}`. For standard ANSI colors, (`color0` - `colo15`) their names can be used as well.
 
-**If `color1` to `color6` and (`background` or `color0`) and (`foreground` or `color7`) are present, the program will generate a full 255 color palette.**
+## Palette generation
 
-Any color defined as well as those generated can be used as a variable. If a field is assigned multiple times, the last definition will be used.
+If the file provides colors `0` to `7` (or alternatively `background` instead of `0`, or `foreground` instead of `7`, whese will take precedence!), the program will create a 256 color pallete by interpolaing between them. Note that these colors will not be outputted unless used as a a variable. To preview these colors, use the option `--preview-gen` or `-P`.
 
 ### Special fields
 |Name|Description|

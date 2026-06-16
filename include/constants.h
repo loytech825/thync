@@ -65,7 +65,9 @@ inline const std::string HELP{
     "Options:\n"
     "\t -o <output-dir> \t\t = Override output directory\n"
     "\t -f <file-name>  \t\t = Color config path\n"
-    "\t --preview <file-name>  \t = renders the generated pallete (doesn't generate any files!)\n\n"
+    "\t --preview, -p \t\t\t = renders the generated colors (doesn't generate any files!)\n"
+    "\t --preview-gen, -P \t\t = renders the generated palette (doesn't generate any files!)\n"
+    "\t --help, -h \t\t\t = shows this help\n\n"
 
 };
 
