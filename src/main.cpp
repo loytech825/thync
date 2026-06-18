@@ -185,13 +185,12 @@ int main(int argc, char *argv[])
 
             std::cout << "Writing section "  << sect.name << " to " << fs::absolute(path).lexically_normal() << "\n";
            
-            std::cout << to_print << "\n";
+            //std::cout << to_print << "\n";
             //if section has a file field, we just copy the file over to path
             if(to_print.key_value_pairs.contains("file"))
             {
                 fs::path copy_from{to_print.key_value_pairs.at("file")};
 
-                std::cout << copy_from.lexically_normal() << "\n";
                 if(!fs::exists(copy_from))
                 {
                     std::cout << "File " << copy_from.lexically_normal() << " not found, skipping\n";
@@ -199,7 +198,7 @@ int main(int argc, char *argv[])
                 else
                 {
                     fs::copy(copy_from, path, std::filesystem::copy_options::overwrite_existing);
-                    std::cout << "\"file\" field found, copying from " << copy_from.lexically_normal() << "\n";
+                    std::cout << "\t\"file\" field found, copying from " << copy_from.lexically_normal() << "\n";
                 }
                 continue;
             }
