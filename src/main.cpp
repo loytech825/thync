@@ -67,6 +67,8 @@ int main(int argc, char *argv[])
 
     //we need to keep a reference of the original argument value
     std::string default_color_loc = color_file;
+
+
     //check default file locations
     if(config.global.key_value_pairs.contains("theme_dir"))
     {
@@ -75,12 +77,33 @@ int main(int argc, char *argv[])
     }
    
 
+    /*
+     * This two if statements check for the file and set up the color_file
+     * works if input was without extension and if file is relative
+     */
     if(!config.global.key_value_pairs.contains("theme_dir") || !fs::exists(color_file))
     {
-        std::cout << "File not found in default dir, checking relative...\n";
-        color_file = fs::absolute(fs::path(default_color_loc)).lexically_normal();
-        std::cout << color_file << "\n";
+        //checks if file with extension exists
+        //if input was name w/o extension
+
+        color_file = color_file + ".conf";
+        if(!fs::exists(color_file))
+        {
+            std::cout << "File not found in default dir, checking relative...\n";
+            color_file = fs::absolute(fs::path(default_color_loc)).lexically_normal();
+        }
     }
+
+    if(!fs::is_regular_file(color_file)) 
+    {
+        color_file = color_file + ".conf";
+        if(!fs::is_regular_file(color_file))
+        {
+            std::cout << "File " << fs::absolute(color_file) << " doesn't exist!\n"; return -1; 
+            return -1;
+        }
+    }
+
 
 
     //check if defaults exist for each section
@@ -118,7 +141,8 @@ int main(int argc, char *argv[])
     /*
         COLOR PARSING
     */   
-    if(!fs::is_regular_file(color_file)) { std::cout << "File " << fs::absolute(color_file) << " doesn't exist!\n"; return -1; }
+   
+
     
     std::vector<ConfigSection> config_colors = parse_config(fs::path{color_file});
     
