@@ -155,7 +155,6 @@ std::string insert_variables(const std::string& input, const std::unordered_map<
 
 std::string insert_variables(const std::string& input, const std::filesystem::path& file_search_dir)
 {
-
     std::string out_line = input;
 
     //replace files

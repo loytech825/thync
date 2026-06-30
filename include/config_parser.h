@@ -4,13 +4,10 @@
 #include <filesystem>
 
 
-//struct ProgramConfig
-//{
-//    std::string name;
-//    std::string directory;
-//    std::string format_16_color;
-//    std::string format_default;
-//};
+/*
+ * Due to how the config parser is written, if there are multiple declarations for each
+ * key, the last one will hold by default.
+ */
 
 /*
     When parsing a config file in the form

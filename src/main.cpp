@@ -69,9 +69,9 @@ int main(int argc, char *argv[])
 
 
     //check default file locations
-    if(config.global.key_value_pairs.contains("theme_dir"))
+    if(config.global.key_value_pairs.contains("default_theme_loc"))
     {
-        fs::path theme_dir{config.global.key_value_pairs.at("theme_dir")};
+        fs::path theme_dir{config.global.key_value_pairs.at("default_theme_loc")};
         color_file = fs::absolute(fs::path(theme_dir) / color_file).lexically_normal();
     }
    
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
      * This two if statements check for the file and set up the color_file
      * works if input was without extension and if file is relative
      */
-    if(!config.global.key_value_pairs.contains("theme_dir") || !fs::exists(color_file))
+    if(!config.global.key_value_pairs.contains("default_theme_loc") || !fs::exists(color_file))
     {
         //checks if file with extension exists
         //if input was name w/o extension
