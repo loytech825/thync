@@ -29,5 +29,5 @@ struct ColorConfig
     Palette palette;
 };
 
-void process_config(Config& config, const std::string& output_dir, const std::string& config_dir);
-ColorConfig process_colors(std::vector<ConfigSection> config);
+void process_config(Config& config, const std::string& output_dir, const std::string& config_dir); //, const std::string& theme_dir);
+ColorConfig process_colors(std::vector<ConfigSection> config, const std::string& theme_dir);

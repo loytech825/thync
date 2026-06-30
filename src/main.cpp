@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
 
 
 
-    //return 0;
     /*
         CONFIG FILE PARSING
     */
@@ -134,19 +133,13 @@ int main(int argc, char *argv[])
                 defaults.emplace_back(parsed);
             }
         }
-
     }
 
 
     /*
         COLOR PARSING
     */   
-   
-
-    
     std::vector<ConfigSection> config_colors = parse_config(fs::path{color_file});
-    
-
 
     //here we insert defaults if present
     for(auto& color_sect : config_colors)
@@ -163,20 +156,13 @@ int main(int argc, char *argv[])
            
            color_sect.key_value_pairs.merge(it->key_value_pairs);
         }
-
-        //std::cout << color_sect << "\n";
     }
     
-
-
     //set up color data structure 
-    ColorConfig colors = process_colors(config_colors);
+    ColorConfig colors = process_colors(config_colors, fs::path(color_file).parent_path().string());
 
     if(preview) { print_colors(colors); std::cout << "\n\n"; return 0; }
     if(preview_gen) { print_256(colors.palette); std::cout << "\n\n"; return 0; }
-
-
-
 
     /*
         Prints colors to files
@@ -191,47 +177,46 @@ int main(int argc, char *argv[])
         if(auto loc = std::find_if(colors.sections.begin(), colors.sections.end(), [&sect](const ConfigSection& int_sect){ return int_sect.name == sect.name; }); loc != colors.sections.end()) to_print = *loc;
         else continue;
 
-        if(sect.name != "default")
+        //skip default section
+        if(sect.name == "default") continue;
+
+        fs::path path{sect.key_value_pairs["path"]};
+        path = path.lexically_normal();
+
+        //config specifies filename not directory
+        if(path.has_extension())
         {
-            fs::path path{sect.key_value_pairs["path"]};
-            path = path.lexically_normal();
-
-            //config specifies filename not directory
-            if(path.has_extension())
-            {
-                if(!fs::exists(path.parent_path())) fs::create_directories(path.parent_path());
-                if(path.extension() == ".noext") path = path.replace_extension("");
-            }else
-            {
-                if(!fs::exists(path)) fs::create_directories(path);
-                if(fs::is_directory(path)) path /= "colors.conf";
-            }
-
-            std::cout << "Writing section "  << sect.name << " to " << fs::absolute(path).lexically_normal() << "\n";
-           
-            //std::cout << to_print << "\n";
-            //if section has a file field, we just copy the file over to path
-            if(to_print.key_value_pairs.contains("file"))
-            {
-                fs::path copy_from{to_print.key_value_pairs.at("file")};
-
-                if(!fs::exists(copy_from))
-                {
-                    std::cout << "File " << copy_from.lexically_normal() << " not found, skipping\n";
-                }
-                else
-                {
-                    fs::copy(copy_from, path, std::filesystem::copy_options::overwrite_existing);
-                    std::cout << "\t\"file\" field found, copying from " << copy_from.lexically_normal() << "\n";
-                }
-                continue;
-            }
-
-
-            std::ofstream file{path};
-            print_cfg(sect, colors.global, to_print, colors.palette, file);
-            file.close();
+            if(!fs::exists(path.parent_path())) fs::create_directories(path.parent_path());
+            if(path.extension() == ".noext") path = path.replace_extension("");
+        }else
+        {
+            if(!fs::exists(path)) fs::create_directories(path);
+            if(fs::is_directory(path)) path /= "colors.conf";
         }
+
+        std::cout << "Writing section "  << sect.name << " to " << fs::absolute(path).lexically_normal() << "\n";
+       
+        //if section has a file field, we just copy the file over to path
+        if(to_print.key_value_pairs.contains("file"))
+        {
+            fs::path copy_from{to_print.key_value_pairs.at("file")};
+
+            if(!fs::exists(copy_from))
+            {
+                std::cout << "File " << copy_from.lexically_normal() << " not found, skipping\n";
+            }
+            else
+            {
+                fs::copy(copy_from, path, std::filesystem::copy_options::overwrite_existing);
+                std::cout << "\t\"file\" field found, copying from " << copy_from.lexically_normal() << "\n";
+            }
+            continue;
+        }
+
+
+        std::ofstream file{path};
+        print_cfg(sect, colors.global, to_print, colors.palette, file);
+        file.close();
     }
 
     //execute post command

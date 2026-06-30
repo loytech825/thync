@@ -38,6 +38,12 @@ std::ostream& operator<<(std::ostream& os, const ConfigSection& cfg);
 
 //parses a "line" of config
 void parse_line(const std::string& line, std::vector<ConfigSection>& sections);
+/*
+ * @brief literally parses key value pairs from config files. Supports sections via [section_name]
+ */
 std::vector<ConfigSection> parse_config(const std::string& config);
 std::vector<ConfigSection> parse_config(const std::filesystem::path& file_path);
+/*
+ * Creates a config at location `path` if it doesn't exist
+ */
 void create_conf(const std::filesystem::path& path);

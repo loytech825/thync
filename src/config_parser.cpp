@@ -10,7 +10,7 @@
 
 std::ostream& operator<<(std::ostream& os, const ConfigSection& cfg)
 {
-    std::cout << cfg.name << "\n";
+    std::cout << "[" << cfg.name << "]\n";
     for(const auto& [k, v] : cfg.key_value_pairs)
     {
         os << k << " : " << v << "\n";
@@ -21,7 +21,6 @@ std::ostream& operator<<(std::ostream& os, const ConfigSection& cfg)
 
 /*
     Parses a config string for now
-    return via `sections`
 */
 std::vector<ConfigSection> parse_config(const std::string& config)
 {
@@ -111,7 +110,6 @@ void parse_line(const std::string& line, std::vector<ConfigSection>& sections)
 
 
     //whitespace 2
-    //pos++;ciauto.test_section
     pos = line.find_first_not_of(" \t", pos); //while(line[pos] == ' ' || line[pos] == '\t') pos++;
 
     //check for =

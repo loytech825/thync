@@ -12,7 +12,7 @@
     replaces tokens
     initializes missing fields...
 */
-void process_config(Config& config, const std::string& output_dir, const std::string& config_dir)
+void process_config(Config& config, const std::string& output_dir, const std::string& config_dir)//, const std::string& theme_dir)
 {
     //parse all that can be parsed here
     for(auto& [k, v] : config.global.key_value_pairs)
@@ -23,9 +23,12 @@ void process_config(Config& config, const std::string& output_dir, const std::st
         }
         v = replace_all(v, "${config_dir}", config_dir);
         v = replace_all(v, "${output_dir}", output_dir);
+        //v = replace_all(v, "${theme_dir}", theme_dir);
 
-        if(k == "format" || k == "format_id" || k == "config_format" || k == "defaults") { v = insert_variables(v, std::filesystem::path(config_dir) / "thync"); }
-        else    { v = insert_variables(v, config.global.key_value_pairs); }
+        if(k == "format" || k == "format_id" || k == "config_format" || k == "defaults") 
+            { v = insert_variables(v, std::filesystem::path(config_dir) / "thync"); }
+        else
+            { v = insert_variables(v, config.global.key_value_pairs); }
     }
 
 
@@ -113,7 +116,7 @@ ConfigSection prepare_section(const ConfigSection& config)
     changes color names to id where possible
     (note: black=0, red=1...bright_black=8, bright_red=9...)
 */
-ColorConfig process_colors(std::vector<ConfigSection> config)
+ColorConfig process_colors(std::vector<ConfigSection> config, const std::string& theme_dir)
 {
 
     //we have key value pairs
@@ -193,6 +196,10 @@ ColorConfig process_colors(std::vector<ConfigSection> config)
         for(auto& [k, v] : sect.key_value_pairs)
         {
             v = insert_variables(v, sect.key_value_pairs, out.palette); 
+            if(k == "file")
+            {
+                v = replace_all(v, "${theme_dir}", theme_dir);
+            }
         }
     }
 
