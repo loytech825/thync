@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include "color256.h"
 #include <exception>
 #include <filesystem>
 #include <fstream>
@@ -115,8 +116,12 @@ std::string insert_variables(const std::string& input, const std::unordered_map<
     {
         std::cout << k << ":\t" << v << "\n———————\n";
     }*/
+    for(const auto& [k, v] : variables_source)
+    {
+        out_line = replace_all(out_line, "${" + k + "}", v);
+    }
 
-    int begin = 0;
+    /*int begin = 0;
     while(true)
     {
         begin = out_line.find("${", begin);
@@ -148,7 +153,7 @@ std::string insert_variables(const std::string& input, const std::unordered_map<
         }
 
         //std::cout << v_name << ", " << var_name << "\n";
-    }
+    }*/
     return out_line;
 }
 
@@ -203,14 +208,22 @@ std::string insert_variables(const std::string &input, const std::unordered_map<
 {
     std::string out_line = input;
 
+    for(const auto& [k, v] : variables_source)
+    {
+        out_line = replace_all(out_line, "${" + k + "}", v);
+    }
 
+    for(int i = 0; i < 256; i++)
+    {
+        out_line = replace_all(out_line, "${color" + std::to_string(i) + "}", rgb2hex(gen_colors[i]));
+    }
     /*std::cout << "NEW CALL\n";
     for(auto [k, v] : variables_source)
     {
         std::cout << k << ":\t" << v << "\n———————\n";
     }*/
 
-    int begin = 0;
+    /*int begin = 0;
     while(true)
     {
         begin = out_line.find("${", begin);
@@ -231,11 +244,9 @@ std::string insert_variables(const std::string &input, const std::unordered_map<
         
         //std::cout << var_name << "\n";
 
-        /*TODO: HERE ALL VARIABLES ARE TRANSLATED INTO CODES
-        SO IF WE HAVE SOMETHING LKE main4, main here would be an ID so main4 can be processed according to that id
+        //TODO: HERE ALL VARIABLES ARE TRANSLATED INTO CODES
+        //SO IF WE HAVE SOMETHING LKE main4, main here would be an ID so main4 can be processed according to that id
         
-        */
-
         //first check the variable source
         if(variables_source.contains(var_name)) { out_line = replace_all(out_line, "${"+v_name+"}", variables_source.at(var_name)); }
 
@@ -246,7 +257,7 @@ std::string insert_variables(const std::string &input, const std::unordered_map<
 
         //if line is left in, we need to move search begin
         else { if(++begin > out_line.length()) break; }
-    }
+    }*/
 
     return out_line;
 }

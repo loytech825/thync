@@ -59,7 +59,7 @@ When using these colors as numbers, you can use `${colorXXX}`. For standard ANSI
 ### Available variables
 |Name|Description|
 |-|-|
-|`theme_dir` | Expands to the parent dir of the theme file. Intended to be used with `file` in config defaults |
+|`theme_dir` | Expands to the parent dir of the theme file. Intended to be used with `file` |
 
 ## Palette generation
 

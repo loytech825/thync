@@ -2,10 +2,16 @@
     Source code for config.h for more info see that
 */
 #include "config.h"
+#include "constants.h"
 #include "helpers.h"
 #include <iostream>
+#include <string>
+#include <unordered_map>
 
-
+void insert_if_missing(std::unordered_map<std::string, std::string>& map, const std::string& key, const std::string& value)
+{
+    if(!map.contains(key)) { map[key] = value ;}
+}
 /*
     Processes the config
     merges with global
@@ -14,13 +20,13 @@
 */
 void process_config(Config& config, const std::string& output_dir, const std::string& config_dir)//, const std::string& theme_dir)
 {
+    //technically we don't need to replace anything in global
+    //but config_dir, output_dir and theme_dir should so we dont have to do them here
     //parse all that can be parsed here
     for(auto& [k, v] : config.global.key_value_pairs)
     {
-        if(k == "post-cmd")
-        {
-            v = replace_all(v, "${section_name}", config.global.name);
-        }
+        //not really sure if this is needed but ok
+        if(k == "post-cmd") { v = replace_all(v, "${section_name}", config.global.name); }
         v = replace_all(v, "${config_dir}", config_dir);
         v = replace_all(v, "${output_dir}", output_dir);
         //v = replace_all(v, "${theme_dir}", theme_dir);
@@ -31,6 +37,14 @@ void process_config(Config& config, const std::string& output_dir, const std::st
             { v = insert_variables(v, config.global.key_value_pairs); }
     }
 
+    //initialize potential missing fields
+    insert_if_missing(config.global.key_value_pairs, "path", DEFAULT_PATH);
+    // only override format, since format-id is dependent on format (if we override format-id and the section
+    // only specifies format, it will use the default format-id even though it shouldnt)
+    insert_if_missing(config.global.key_value_pairs, "format", DEFAULT_FORMAT);
+    insert_if_missing(config.global.key_value_pairs, "comment", DEFAULT_COMMENT);
+    insert_if_missing(config.global.key_value_pairs, "mode", DEFAULT_MODE);
+    insert_if_missing(config.global.key_value_pairs, "config_format", DEFAULT_CONFIG_FORMAT);
 
     for(auto& section_config : config.sections)
     {
@@ -43,12 +57,7 @@ void process_config(Config& config, const std::string& output_dir, const std::st
         section_config.key_value_pairs.merge(cfg_global);
 
         //initializes missing fields
-        if(!section_config.key_value_pairs.contains("path"))        { section_config.key_value_pairs["path"]            = DEFAULT_PATH;                               }
-        if(!section_config.key_value_pairs.contains("format"))      { section_config.key_value_pairs["format"]          = DEFAULT_FORMAT;                             } 
         if(!section_config.key_value_pairs.contains("format_id"))   { section_config.key_value_pairs["format_id"]       = section_config.key_value_pairs["format"];   }
-        if(!section_config.key_value_pairs.contains("comment"))     { section_config.key_value_pairs["comment"]         = DEFAULT_COMMENT;                            }
-        if(!section_config.key_value_pairs.contains("config_format")){section_config.key_value_pairs["config_format"]   = DEFAULT_CONFIG_FORMAT;                      }
-        if(!section_config.key_value_pairs.contains("mode"))        { section_config.key_value_pairs["mode"]            = DEFAULT_MODE;                               }
 
         //checks if mode is valid
         if(!(section_config.key_value_pairs["mode"] != "modify-add" 
@@ -65,6 +74,7 @@ void process_config(Config& config, const std::string& output_dir, const std::st
             v = replace_all(v, "${section_name}", section_config.name);
             v = replace_all(v, "${config_dir}", config_dir);
             v = replace_all(v, "${output_dir}", output_dir);
+            //v = replace_all(v, "${theme_dir}", theme_dir);
         }
         //replaces variables
         for(auto& [k, v] : section_config.key_value_pairs){

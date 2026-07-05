@@ -9,3 +9,4 @@ vim-test.conf
 catpuccin-mocha.vim
 mocha.json
 file1.txt
+vars.txt
