@@ -1,5 +1,6 @@
 #include "helpers.h"
 #include "color256.h"
+#include <algorithm>
 #include <exception>
 #include <filesystem>
 #include <fstream>
@@ -110,15 +111,20 @@ std::string insert_variables(const std::string& input, const std::unordered_map<
 {
     std::string out_line = input;
 
-
-    /*std::cout << "NEW CALL\n";
-    for(auto [k, v] : variables_source)
-    {
-        std::cout << k << ":\t" << v << "\n———————\n";
-    }*/
     for(const auto& [k, v] : variables_source)
     {
         out_line = replace_all(out_line, "${" + k + "}", v);
+        try{
+            int id = stoi(k);
+            if(id < 0 || id > 255) continue;
+            // named colors
+            else if(id < 16)
+                out_line = replace_all(out_line, "${" + COLORS[id] + "}", v);
+
+            // by id
+            out_line = replace_all(out_line, "${color" + k + "}", v);
+
+        }catch(std::exception e) {}
     }
 
     /*int begin = 0;
@@ -211,6 +217,17 @@ std::string insert_variables(const std::string &input, const std::unordered_map<
     for(const auto& [k, v] : variables_source)
     {
         out_line = replace_all(out_line, "${" + k + "}", v);
+
+        try{
+            int id = stoi(k);
+            if(id < 0 || id > 255) continue;
+            // named colors
+            else if(id < 16)
+                out_line = replace_all(out_line, "${" + COLORS[id] + "}", v);
+
+            // by id
+            out_line = replace_all(out_line, "${color" + k + "}", v);
+        }catch(std::exception e) {}
     }
 
     for(int i = 0; i < 256; i++)
